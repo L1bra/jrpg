@@ -1,4 +1,9 @@
-#include <SFML/Graphics.hpp>
+#ifndef WINDOW_H_
+#define WINDOW_H_
+
+#include "player.h"
+#include <vector>
+
 
 class Window
 {
@@ -16,4 +21,8 @@ private:
     sf::RenderWindow m_Window;
     sf::Sprite m_BackgroundSprite;
     sf::Texture m_BackgroundTexture;
+
+    Player m_Player;
 };
+
+#endif  // WINDOW_H_

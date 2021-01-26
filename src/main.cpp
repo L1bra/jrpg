@@ -3,7 +3,7 @@
 #include "window.h"
 
 
-int main(int argc, char* argv[])
+int main()
 {
     Window window;
     window.start();
