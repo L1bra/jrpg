@@ -20,9 +20,10 @@ public:
 private:
     sf::RenderWindow m_Window;
     sf::Sprite m_BackgroundSprite;
-    sf::Texture m_BackgroundTexture;
+    std::shared_ptr<sf::Texture> m_BackgroundTexture;
 
     Player m_Player;
+    ResourceManager m_ResourceManager;
 };
 
 #endif  // WINDOW_H_

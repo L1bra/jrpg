@@ -1,15 +1,8 @@
 #ifndef PLAYER_H_
 #define PLAYER_H_
 
-#include <SFML/Graphics.hpp>
-
-struct Magic
-{
-    sf::Vector2f m_Position;
-    sf::Sprite m_Sprite;
-    sf::Texture m_Texture;
-};
-
+#include "resource_manager.h"
+#include "animation.h"
 
 class Player
 {
@@ -17,8 +10,7 @@ public:
     Player();
     ~Player();
 
-    sf::Sprite getSprite(); // TODO: Resource manager
-
+    sf::Sprite getSprite();
 
     void moveLeft();
     void moveRight();
@@ -30,12 +22,14 @@ public:
 private:
     sf::Vector2f m_Position;
     sf::Sprite m_Sprite;
-    sf::Texture m_Texture;
+    std::shared_ptr<sf::Texture> m_Texture_ptr;
 
     bool m_LeftKeyPressed;
     bool m_RightKeyPressed;
 
     float m_Speed;
+
+    ResourceManager m_ResourceManager;
 };
 
 

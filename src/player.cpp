@@ -3,13 +3,15 @@
 Player::Player()
 {
     m_Speed = 400;
-    sf::Vector2f scaleTarget(32, 32);
+    sf::Vector2f scaleTarget(54, 54);
 
-    m_Texture.loadFromFile("src/res/magic0.png");
-    m_Sprite.setTexture(m_Texture);
+    m_Texture_ptr = m_ResourceManager.loadTexture(Textures::Magic, "src/res/sprites/magic.png");
+    
+    m_Sprite.setTexture(*m_Texture_ptr);
+    m_Sprite.setTextureRect( {0, 0, 16, 16});
     m_Sprite.setScale(scaleTarget.x / m_Sprite.getLocalBounds().width,
                         scaleTarget.y / m_Sprite.getLocalBounds().height);
-    
+
     m_Position.x = 960;
     m_Position.y = 850;
 }
@@ -60,6 +62,6 @@ void Player::update(float elapsed_time)
     {
         m_Position.x -= m_Speed * elapsed_time;
     }
-
+    
     m_Sprite.setPosition(m_Position);
 }
