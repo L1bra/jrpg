@@ -1,9 +1,11 @@
 #ifndef WINDOW_H_
 #define WINDOW_H_
 
-#include "player.h"
+#include <SFML/Graphics.hpp>
 #include <vector>
+#include <iostream>
 
+#include "player.h"
 
 class Window
 {
@@ -23,7 +25,6 @@ private:
     std::shared_ptr<sf::Texture> m_BackgroundTexture;
 
     Player m_Player;
-    ResourceManager m_ResourceManager;
 };
 
 #endif  // WINDOW_H_

@@ -2,34 +2,19 @@
 #define PLAYER_H_
 
 #include "resource_manager.h"
-#include "animation.h"
+#include "entity.h"
 
-class Player
+class Player : public Entity
 {
 public:
     Player();
-    ~Player();
+    ~Player() {};
 
-    sf::Sprite getSprite();
-
-    void moveLeft();
-    void moveRight();
-
-    void stopLeft();
-    void stopRight();
-
+    void move(Entity::Direction direction);
+    void stop();
+    
+    void draw(sf::RenderWindow& window) const;
     void update(float elapsed_time);
-private:
-    sf::Vector2f m_Position;
-    sf::Sprite m_Sprite;
-    std::shared_ptr<sf::Texture> m_Texture_ptr;
-
-    bool m_LeftKeyPressed;
-    bool m_RightKeyPressed;
-
-    float m_Speed;
-
-    ResourceManager m_ResourceManager;
 };
 
 

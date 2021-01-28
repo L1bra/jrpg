@@ -5,7 +5,7 @@
 #include <memory>
 #include <map>
 
-enum class Textures
+enum Textures
 {
     Background,
     Magic
@@ -15,15 +15,12 @@ enum class Textures
 class ResourceManager
 {
 public:
-    ResourceManager() {};
-    ~ResourceManager() {};
-
-    std::shared_ptr<sf::Texture> loadTexture(Textures id, const sf::String& file);
-    std::shared_ptr<sf::Texture> getTexture(Textures id) const;
-
+    static std::shared_ptr<sf::Texture> loadTexture(Textures id, const sf::String& file);
+    static std::shared_ptr<sf::Texture> getTexture(Textures id) ;
+    static void free_pointers();
 private:
-    std::map<Textures, std::shared_ptr<sf::Texture>> m_Textures;
+    static std::map<Textures, std::shared_ptr<sf::Texture>> m_Textures;
+    ResourceManager() {};
 };
-
 
 #endif  // RECOURCES_MANAGER_H_
