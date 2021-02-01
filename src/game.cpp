@@ -78,12 +78,10 @@ void Game::input()
 
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
             {
-                std::cout << "Right" << "\n";
                 move_arrow(Arrow_Direction::Right);
             }
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
             {
-                std::cout << "Left" << "\n";
                 move_arrow(Arrow_Direction::Left);
             }
             else
@@ -97,13 +95,11 @@ void Game::input()
         {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
             {   
-                // std::cout << "Right" << "\n";
                 for (size_t i = 0; i <= PLAYER_ENTITY_INDEX; i++)
                     entities[i].move(Entity::Direction::Right);
             }
             else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
             {
-                // std::cout << "Left" << "\n";
                 for(size_t i = 0; i <= PLAYER_ENTITY_INDEX; i++)
                     entities[i].move(Entity::Direction::Left);
             }
@@ -128,7 +124,6 @@ void Game::update(float dt)
             spawn_enemy();
             enemy_spawned = true;
         }
-        // std::cout << entities[0].m_Position.x << "\n";
     }
 
     if(m_Game_state == Game_state::battle && !arrow_spawned)
@@ -150,21 +145,8 @@ void Game::update(float dt)
                         sf::Vector2f current_arrow_pos = m_ArrowSprite.getPosition();
                         if(current_arrow_pos.x >= entities[0].m_Position.x)
                         {
-                            // if(current_arrow_pos.x > entities[0].m_Position.x && current_arrow_pos.x < entities[2].m_Position.x)
-                            // {
-                            //     m_ArrowSprite.setPosition({entities[0].m_Position.x, current_arrow_pos.y});
-                            // }
-                            // else if(current_arrow_pos.x == entities[2].m_Position.x)
-                            // {
-                            //     m_ArrowSprite.setPosition({entities[1].m_Position.x, current_arrow_pos.y});
-                            // }
-                            // else if(current_arrow_pos.x == entities[1].m_Position.x)
-                            // {
-                            //     m_ArrowSprite.setPosition(entities[0].m_Position);
-                            // }
-                            m_ArrowSprite.setPosition({current_arrow_pos.x -= arrow_speed * dt, current_arrow_pos.y});   //  - 40
+                            m_ArrowSprite.setPosition({current_arrow_pos.x -= arrow_speed * dt, current_arrow_pos.y});
                         }
-                        std::cout << "arrow pos.x: " << current_arrow_pos.x << " - " << "entities[0]" << entities[2].m_Position.x << "\n";
                     } break;
 
                     case Arrow_Direction::Right:
@@ -172,28 +154,13 @@ void Game::update(float dt)
                         sf::Vector2f current_arrow_pos = m_ArrowSprite.getPosition();
                         if(current_arrow_pos.x <= entities[2].m_Position.x)
                         {
-                            // if(current_arrow_pos.x > entities[0].m_Position.x && current_arrow_pos.x < entities[2].m_Position.x)
-                            // {
-                            //     m_ArrowSprite.setPosition({entities[2].m_Position.x, current_arrow_pos.y});
-                            // }
-                            // // else if(current_arrow_pos.x == entities[1].m_Position.x)
-                            // // {
-                            // //     m_ArrowSprite.setPosition(entities[2].m_Position);
-                            // // }
-                            // else if(current_arrow_pos.x == entities[0].m_Position.x)
-                            // {
-                            //     m_ArrowSprite.setPosition({entities[1].m_Position.x, current_arrow_pos.y});
-                            //     // arrow_moved = true;
-                            // }
                             m_ArrowSprite.setPosition({current_arrow_pos.x += arrow_speed * dt, current_arrow_pos.y});
                         }
-                        std::cout << "arrow pos.x: " << current_arrow_pos.x << " - " << "entities[2]" << entities[2].m_Position.x << "\n";
                     } break;
                 }
             } break;
 
             case Arrow_state::stand : {
-                // printf("stand\n");
             } break;
         }
     }
