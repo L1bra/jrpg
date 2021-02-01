@@ -1,12 +1,12 @@
 #include <iostream>
 
-#include "window.h"
+#include "game.h"
 
 
 int main()
 {
-    Window window;
-    window.start();
+    Game game;
+    game.start();
 
     return 0;
 }

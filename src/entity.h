@@ -37,6 +37,17 @@ struct Entity
 
     int hp;
     float m_Speed;
+
+    void move(Direction direction);
+    void stop();
+
+    void draw(sf::RenderWindow& window) const;
+    void update(float dt);
 };
+
+Entity first_character_entity(); 
+Entity second_character_entity();
+Entity third_character_entity();
+Entity enemy_entity();
 
 #endif  // ENTITY_H_
