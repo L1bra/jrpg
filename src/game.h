@@ -71,6 +71,7 @@ private:
     
     bool arrow_spawned = false;
     bool enemy_spawned = false;
+    bool text_drawn = false;
 
     Entity entities[MAX_ENTITIES];
 };

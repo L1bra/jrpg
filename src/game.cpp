@@ -55,8 +55,25 @@ void Game::start()
                     {
                         if(event.key.code == sf::Keyboard::Enter)
                         {
-                            // TODO:
                             // printf("%s\n", friend_chosen ? "true" : "false");
+
+                            if(!text_drawn)
+                                text_drawn = true;  // TODO: draw second string
+
+                            switch(m_Choose_state)
+                            {
+                                case Choose_state::Enemy :
+                                {
+                                    entities[ARROW_ENTITY_OFFSET].m_Position = {entities[PLAYER_ENTITY_INDEX - 2].m_Position.x, entities[PLAYER_ENTITY_INDEX - 2].m_Position.y - 40};
+                                    m_Choose_state = Choose_state::Friend;
+                                } break;
+
+                                case Choose_state::Friend :
+                                {
+                                    entities[ARROW_ENTITY_OFFSET].m_Position = {entities[ENEMY_ENTITY_OFFSET].m_Position.x, entities[ENEMY_ENTITY_OFFSET].m_Position.y - 40};
+                                    m_Choose_state = Choose_state::Enemy;
+                                } break;
+                            }                         
                         }
                         else if(event.key.code == sf::Keyboard::Left)
                         {
@@ -151,8 +168,10 @@ void Game::draw()
     for(auto &entity : entities)
         entity.draw(m_Window);
 
-    if(m_Game_state == Game_state::battle && m_Choose_state == Choose_state::Friend)
+    if(m_Game_state == Game_state::battle && !text_drawn)
+    {
         m_Window.draw(text);
+    }
     
     m_Window.display();
 }
