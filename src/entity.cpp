@@ -2,6 +2,11 @@
 #include "resource_manager.h"
 
 
+bool Entity::operator== (const Entity& rhs) const    // ???
+{
+    return (m_Sprite.getTexture() == rhs.m_Sprite.getTexture());
+}
+
 void Entity::move(Direction direction)
 {
     m_Alive_state = Alive_state::Walking;
@@ -54,76 +59,18 @@ void Entity::update(float dt)
 }
 
 
-Entity first_character_entity()
+Entity init_entity(sf::Vector2f position, sf::String sprite_path)
 {
     sf::Vector2f scaleTarget(32, 32);
     
     Entity entity = {};
     entity.hp = 100;
-    entity.m_Speed = 400;
+    entity.m_Speed = 400.0f;
 
     entity.m_State = Entity_state::Alive;
     entity.m_Alive_state = Alive_state::Stand;
-    entity.m_Position = {32, 850};
-    entity.m_Texture_ptr = ResourceManager::loadTexture(Textures::Magic, "src/res/sprites/magic0.png");
-    entity.m_Sprite.setTexture(*entity.m_Texture_ptr);
-    entity.m_Sprite.setScale(scaleTarget.x / entity.m_Sprite.getLocalBounds().width,
-                        scaleTarget.y / entity.m_Sprite.getLocalBounds().height);
-
-    return entity;
-}
-
-Entity second_character_entity()
-{
-    sf::Vector2f scaleTarget(32, 32);
-    
-    Entity entity = {};
-    entity.hp = 100;
-    entity.m_Speed = 400;
-
-    entity.m_State = Entity_state::Alive;
-    entity.m_Alive_state = Alive_state::Stand;
-    entity.m_Position = {72, 850};
-    entity.m_Texture_ptr = ResourceManager::loadTexture(Textures::Magic, "src/res/sprites/magic1.png");
-    entity.m_Sprite.setTexture(*entity.m_Texture_ptr);
-    entity.m_Sprite.setScale(scaleTarget.x / entity.m_Sprite.getLocalBounds().width,
-                        scaleTarget.y / entity.m_Sprite.getLocalBounds().height);
-
-    return entity;
-}
-
-Entity third_character_entity()
-{
-    sf::Vector2f scaleTarget(32, 32);
-    
-    Entity entity = {};
-    entity.hp = 100;
-    entity.m_Speed = 400;
-
-    entity.m_State = Entity_state::Alive;
-    entity.m_Alive_state = Alive_state::Stand;
-    entity.m_Position = {112, 850};
-    entity.m_Texture_ptr = ResourceManager::loadTexture(Textures::Magic, "src/res/sprites/magic2.png");
-    entity.m_Sprite.setTexture(*entity.m_Texture_ptr);
-    entity.m_Sprite.setScale(scaleTarget.x / entity.m_Sprite.getLocalBounds().width,
-                        scaleTarget.y / entity.m_Sprite.getLocalBounds().height);
-
-    return entity;
-}
-
-
-Entity enemy_entity()
-{
-    sf::Vector2f scaleTarget(32.0f, 32.0f);
-
-    Entity entity = {};
-    entity.hp = 100;
-
-    entity.m_Speed = 400;
-    entity.m_State = Entity_state::Alive;
-    entity.m_Alive_state = Alive_state::Stand;
-    entity.m_Position = {800, 850};
-    entity.m_Texture_ptr = ResourceManager::loadTexture(Textures::Enemy, "src/res/sprites/enemy.png");
+    entity.m_Position = position;
+    entity.m_Texture_ptr = ResourceManager::loadTexture(Textures::Magic, sprite_path);
     entity.m_Sprite.setTexture(*entity.m_Texture_ptr);
     entity.m_Sprite.setScale(scaleTarget.x / entity.m_Sprite.getLocalBounds().width,
                         scaleTarget.y / entity.m_Sprite.getLocalBounds().height);

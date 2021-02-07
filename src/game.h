@@ -1,34 +1,38 @@
 #ifndef GAME_H_
 #define GAME_H_
 
-#include <SFML/Graphics.hpp>
+
 #include <vector>
 #include <iostream>
 
+#include <SFML/Graphics.hpp>
+
 #include "entity.h"
 
-
+// TODO: 
 const size_t PLAYER_ENTITY_INDEX = 2;
 const size_t ENEMY_ENTITY_OFFSET = 3;
-const size_t MAX_ENTITIES = 4;
+const size_t ARROW_ENTITY_OFFSET = 5;
+const size_t MAX_ENTITIES = 6;
 
 
-enum class Game_state
+enum class Game_state : uint8_t
 {
     explore = 0,
     battle
 };
 
-enum class Arrow_state
+enum class Arrow_Direction : uint8_t
 {
-    stand = 0,
-    move
+    Right = 0,
+    Left
 };
 
-enum class Arrow_Direction
+enum class Choose_state : uint8_t
 {
-    Right,
-    Left
+    None,
+    Friend = 0,
+    Enemy
 };
 
 
@@ -39,21 +43,18 @@ private:
     void update(float dt);
     void draw();
 
-    void init_entities();
+    void init_party_entities();
     void kill_entity(Entity *entity);   // TODO
 
     void spawn_enemy();
+    void spawn_arrow(sf::Vector2f party_member_pos);
 
-    void spawn_arrow(sf::Vector2f position);    // TOOD
     void move_arrow(Arrow_Direction direction);
-    void stop_arrow();
-
 public:
     Game();
     ~Game();
 
     void start();
-
 private:
     sf::RenderWindow m_Window;
     sf::Sprite m_BackgroundSprite;
@@ -61,20 +62,17 @@ private:
     
     sf::Sprite m_ArrowSprite;
     std::shared_ptr<sf::Texture> m_ArrowTexture;
-    bool enemy_spawned = false;
+
+    sf::Text text;
+    std::shared_ptr<sf::Font> m_Font;
 
     Game_state m_Game_state;
-
-    Arrow_state m_Arrow_state;  // struct Arrow ?
-    Arrow_Direction arrow_move_direction;
+    Choose_state m_Choose_state;
     
-    bool arrow_spawned;
-    bool arrow_moved;
-    float arrow_speed; 
+    bool arrow_spawned = false;
+    bool enemy_spawned = false;
 
     Entity entities[MAX_ENTITIES];
-
-
 };
 
 #endif  // GAME_H_

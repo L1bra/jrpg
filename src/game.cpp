@@ -1,7 +1,6 @@
 #include "game.h"
 #include "resource_manager.h"
-#include <algorithm>
-#include <vector>
+
 
 Game::Game()
 {    
@@ -14,16 +13,16 @@ Game::Game()
     m_BackgroundSprite.setScale(targetSize.x / m_BackgroundSprite.getLocalBounds().width,
                                 targetSize.y / m_BackgroundSprite.getLocalBounds().height);
 
-
-    m_ArrowTexture = ResourceManager::loadTexture(Textures::Arrow, "src/res/sprites/arrow.png");
-    m_ArrowSprite.setTexture(*m_ArrowTexture);
+    m_Font = ResourceManager::loadFont(Fonts::Arial, "src/res/fonts/arial.ttf");
+    text.setFont(*m_Font);
+    text.setString("Choose the character with LEFT and RIGHT keys\n\t\t\t\t\t and press ENTER");
+    text.setCharacterSize(24);
+    text.setFillColor(sf::Color::Black);
+    text.setStyle(sf::Text::Bold);
+    text.setPosition({650, 650});
     
     m_Game_state = Game_state::explore;
-    m_Arrow_state = Arrow_state::stand;
-
-    arrow_spawned = false;
-    arrow_moved = false;
-    arrow_speed = 200.0f;
+    m_Choose_state = Choose_state::Friend;
 }
 
 Game::~Game()
@@ -35,8 +34,8 @@ Game::~Game()
 void Game::start()
 {
     sf::Clock clock;
-    init_entities();
-    m_Window.setKeyRepeatEnabled(false);
+    init_party_entities();
+    // m_Window.setKeyRepeatEnabled(false);
 
     while(m_Window.isOpen())
     {
@@ -50,8 +49,27 @@ void Game::start()
                     m_Window.close();
                 } break;
 
-                default:
-                    break;       
+                case sf::Event::KeyPressed:
+                {
+                    if(m_Game_state == Game_state::battle)
+                    {
+                        if(event.key.code == sf::Keyboard::Enter)
+                        {
+                            // TODO:
+                            // printf("%s\n", friend_chosen ? "true" : "false");
+                        }
+                        else if(event.key.code == sf::Keyboard::Left)
+                        {
+                            move_arrow(Arrow_Direction::Left);
+                        }
+                        else if(event.key.code == sf::Keyboard::Right)
+                        {
+                            move_arrow(Arrow_Direction::Right);
+                        }
+                    }
+                } break;
+
+                default: break;
             }
         }
 
@@ -72,23 +90,8 @@ void Game::input()
     switch(m_Game_state)
     {
         case Game_state::battle:
-        {
-            for(size_t i = 0; i <= PLAYER_ENTITY_INDEX; i++)
-                entities[i].stop();
-
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            {
-                move_arrow(Arrow_Direction::Right);
-            }
-            else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            {
-                move_arrow(Arrow_Direction::Left);
-            }
-            else
-            {
-                stop_arrow();
-            }
-
+        {   
+            // TODO:
         } break;
 
         case Game_state::explore:
@@ -118,7 +121,7 @@ void Game::update(float dt)
     for(auto &entity : entities)
     {
         entity.update(dt);
-        if(entity.m_Position.x >= 700.0f && enemy_spawned == false) // ???
+        if(entity.m_Position.x >= 700.0f && !enemy_spawned) // ???
         {
             m_Game_state = Game_state::battle;
             spawn_enemy();
@@ -126,42 +129,15 @@ void Game::update(float dt)
         }
     }
 
-    if(m_Game_state == Game_state::battle && !arrow_spawned)
+    if(m_Game_state == Game_state::battle)
     {
-        m_ArrowSprite.setPosition({entities[0].m_Position.x, entities[0].m_Position.y - 36});
-        arrow_spawned = true;
-    }
-    else
-    {
-        switch(m_Arrow_state)
+        for(size_t i = 0; i <= PLAYER_ENTITY_INDEX; i++)
+            entities[i].stop();
+        
+        if(!arrow_spawned)
         {
-            case Arrow_state::move:
-            {
-                switch(arrow_move_direction)
-                {
-
-                    case Arrow_Direction::Left:
-                    {
-                        sf::Vector2f current_arrow_pos = m_ArrowSprite.getPosition();
-                        if(current_arrow_pos.x >= entities[0].m_Position.x)
-                        {
-                            m_ArrowSprite.setPosition({current_arrow_pos.x -= arrow_speed * dt, current_arrow_pos.y});
-                        }
-                    } break;
-
-                    case Arrow_Direction::Right:
-                    {
-                        sf::Vector2f current_arrow_pos = m_ArrowSprite.getPosition();
-                        if(current_arrow_pos.x <= entities[2].m_Position.x)
-                        {
-                            m_ArrowSprite.setPosition({current_arrow_pos.x += arrow_speed * dt, current_arrow_pos.y});
-                        }
-                    } break;
-                }
-            } break;
-
-            case Arrow_state::stand : {
-            } break;
+            spawn_arrow({entities[PLAYER_ENTITY_INDEX - 1].m_Position.x, entities[PLAYER_ENTITY_INDEX - 2].m_Position.y - 36});
+            arrow_spawned = true;
         }
     }
 }
@@ -174,36 +150,99 @@ void Game::draw()
 
     for(auto &entity : entities)
         entity.draw(m_Window);
-    
-    if(arrow_spawned)
-        m_Window.draw(m_ArrowSprite);
+
+    if(m_Game_state == Game_state::battle && m_Choose_state == Choose_state::Friend)
+        m_Window.draw(text);
     
     m_Window.display();
 }
 
 
-void Game::init_entities()
+void Game::init_party_entities()
 {
-    entities[PLAYER_ENTITY_INDEX - 2] = first_character_entity();
-    entities[PLAYER_ENTITY_INDEX - 1] = second_character_entity();
-    entities[PLAYER_ENTITY_INDEX - 0] = third_character_entity();
+    entities[PLAYER_ENTITY_INDEX - 2] = init_entity({32, 850}, "src/res/sprites/magic0.png");
+    entities[PLAYER_ENTITY_INDEX - 1] = init_entity({72, 850}, "src/res/sprites/magic1.png");
+    entities[PLAYER_ENTITY_INDEX - 0] = init_entity({112, 850}, "src/res/sprites/magic2.png");
 }
 
 
 void Game::spawn_enemy()
 {
     if(m_Game_state == Game_state::battle)
-        entities[ENEMY_ENTITY_OFFSET] = enemy_entity();
+    {
+        entities[ENEMY_ENTITY_OFFSET] = init_entity({1200, 850}, "src/res/sprites/enemy.png");
+        entities[ENEMY_ENTITY_OFFSET + 1] = init_entity({1240, 850}, "src/res/sprites/enemy.png");
+    }
+}
+
+void Game::spawn_arrow(sf::Vector2f party_member_pos)
+{
+    if(m_Game_state == Game_state::battle)
+    {
+        entities[ARROW_ENTITY_OFFSET] = init_entity(party_member_pos, "src/res/sprites/arrow.png");
+    }
 }
 
 
 void Game::move_arrow(Arrow_Direction direction)
 {
-    m_Arrow_state = Arrow_state::move;
-    arrow_move_direction = direction;
-}
+    if(m_Game_state == Game_state::battle)
+    {
+        switch(direction) 
+        {
+            case Arrow_Direction::Left:
+            {
+                sf::Vector2f current_arrow_pos = entities[ARROW_ENTITY_OFFSET].m_Position;
+                switch(m_Choose_state)
+                {
+                    case Choose_state::Friend:
+                    {
+                        if(current_arrow_pos.x == entities[PLAYER_ENTITY_INDEX - 1].m_Position.x)
+                        {
+                            entities[ARROW_ENTITY_OFFSET].m_Position = {entities[PLAYER_ENTITY_INDEX - 2].m_Position.x, entities[PLAYER_ENTITY_INDEX - 2].m_Position.y - 40};
+                        }
+                        else if(current_arrow_pos.x == entities[PLAYER_ENTITY_INDEX - 0].m_Position.x)
+                        {
+                            entities[ARROW_ENTITY_OFFSET].m_Position = {entities[PLAYER_ENTITY_INDEX - 1].m_Position.x, entities[PLAYER_ENTITY_INDEX - 1].m_Position.y - 40};
+                        }
+                    } break;
 
-void Game::stop_arrow()
-{
-    m_Arrow_state = Arrow_state::stand;
+                    case Choose_state::Enemy:
+                    {
+                        if(current_arrow_pos.x == entities[ENEMY_ENTITY_OFFSET + 1].m_Position.x)
+                        {
+                            entities[ARROW_ENTITY_OFFSET].m_Position = {entities[ENEMY_ENTITY_OFFSET].m_Position.x, entities[ENEMY_ENTITY_OFFSET].m_Position.y - 40};
+                        }
+                    } break;
+                };
+            } break;
+
+            case Arrow_Direction::Right:
+            {
+                sf::Vector2f current_arrow_pos = entities[ARROW_ENTITY_OFFSET].m_Position;
+                switch(m_Choose_state)
+                {
+                    case Choose_state::Friend:
+                    {
+                        if(current_arrow_pos.x == entities[PLAYER_ENTITY_INDEX - 2].m_Position.x)
+                        {
+                            entities[ARROW_ENTITY_OFFSET].m_Position = {entities[PLAYER_ENTITY_INDEX - 1].m_Position.x, entities[PLAYER_ENTITY_INDEX - 1].m_Position.y - 40};
+                        }
+                        else if(current_arrow_pos.x == entities[PLAYER_ENTITY_INDEX - 1].m_Position.x)
+                        {
+                            entities[ARROW_ENTITY_OFFSET].m_Position = {entities[PLAYER_ENTITY_INDEX].m_Position.x, entities[PLAYER_ENTITY_INDEX].m_Position.y - 40};
+                        }
+                    } break;
+
+                    case Choose_state::Enemy:
+                    {
+                        if(current_arrow_pos.x == entities[ENEMY_ENTITY_OFFSET].m_Position.x)
+                        {
+                            entities[ARROW_ENTITY_OFFSET].m_Position = {entities[ENEMY_ENTITY_OFFSET + 1].m_Position.x, entities[ENEMY_ENTITY_OFFSET + 1].m_Position.y - 40};
+                        }
+                    } break;
+                };
+            } break;
+        }
+    }
 }

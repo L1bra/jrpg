@@ -18,8 +18,24 @@ std::shared_ptr<sf::Texture> ResourceManager::getTexture(Textures id)
     return texture->second; // TODO
 }
 
+std::shared_ptr<sf::Font> ResourceManager::loadFont(Fonts id, const sf::String& file)
+{
+    sf::Font font;
+    font.loadFromFile(file);
 
-void ResourceManager::free_pointers()
+    std::shared_ptr<sf::Font> font_ptr = std::make_shared<sf::Font>(font);
+    m_Fonts.insert(std::pair<Fonts, std::shared_ptr<sf::Font>>(id, font_ptr));
+
+    return font_ptr;
+}
+
+std::shared_ptr<sf::Font> ResourceManager::getFont(Fonts id)
+{
+    auto font = m_Fonts.find(id);
+    return font->second;
+}
+
+void ResourceManager::free_pointers()   // TODO: free fonts pointers
 {
     for (auto iter = m_Textures.begin(); iter != m_Textures.end();)
     {
@@ -31,8 +47,8 @@ void ResourceManager::free_pointers()
         {
             ++iter;
         }
-        
     }
 }
 
 std::map<Textures, std::shared_ptr<sf::Texture>> ResourceManager::m_Textures;
+std::map<Fonts, std::shared_ptr<sf::Font>> ResourceManager::m_Fonts;

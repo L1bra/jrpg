@@ -5,14 +5,14 @@
 #include <memory>
 
 
-enum class Entity_state
+enum class Entity_state : uint8_t
 {
     Dead = 0,
     Alive
 };
 
 
-enum class Alive_state
+enum class Alive_state : uint8_t
 {
     Stand = 0,
     Walking
@@ -21,7 +21,7 @@ enum class Alive_state
 
 struct Entity
 {
-    enum Direction
+    enum Direction : uint8_t
     {
         Right,
         Left
@@ -43,11 +43,10 @@ struct Entity
 
     void draw(sf::RenderWindow& window) const;
     void update(float dt);
+
+    bool operator== (const Entity& rhs) const;
 };
 
-Entity first_character_entity(); 
-Entity second_character_entity();
-Entity third_character_entity();
-Entity enemy_entity();
+Entity init_entity(sf::Vector2f position, sf::String sprite);
 
 #endif  // ENTITY_H_
