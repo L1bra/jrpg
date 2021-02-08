@@ -44,12 +44,15 @@ private:
     void draw();
 
     void init_party_entities();
-    void kill_entity(Entity *entity);   // TODO
+    void kill_entity(Entity* entity);   // TODO
+    void damage_entity(Entity* entity, int amount);
+    Entity get_current_entity();
 
     void spawn_enemy();
     void spawn_arrow(sf::Vector2f party_member_pos);
 
     void move_arrow(Arrow_Direction direction);
+    sf::Vector2f get_current_arrow_pos();
 public:
     Game();
     ~Game();

@@ -64,12 +64,16 @@ void Game::start()
                             {
                                 case Choose_state::Enemy :
                                 {
+                                    auto entity = get_current_entity();
+                                    damage_entity(&entity, 100);
                                     entities[ARROW_ENTITY_OFFSET].m_Position = {entities[PLAYER_ENTITY_INDEX - 2].m_Position.x, entities[PLAYER_ENTITY_INDEX - 2].m_Position.y - 40};
                                     m_Choose_state = Choose_state::Friend;
                                 } break;
 
                                 case Choose_state::Friend :
                                 {
+                                    auto entity = get_current_entity();
+                                    damage_entity(&entity, 100);
                                     entities[ARROW_ENTITY_OFFSET].m_Position = {entities[ENEMY_ENTITY_OFFSET].m_Position.x, entities[ENEMY_ENTITY_OFFSET].m_Position.y - 40};
                                     m_Choose_state = Choose_state::Enemy;
                                 } break;
@@ -137,7 +141,9 @@ void Game::update(float dt)
 {
     for(auto &entity : entities)
     {
-        entity.update(dt);
+        if(entity.m_State == Entity_state::Alive)
+            entity.update(dt);
+        
         if(entity.m_Position.x >= 700.0f && !enemy_spawned) // ???
         {
             m_Game_state = Game_state::battle;
@@ -166,13 +172,18 @@ void Game::draw()
     m_Window.draw(m_BackgroundSprite);
 
     for(auto &entity : entities)
-        entity.draw(m_Window);
+    {
+        if(entity.m_State == Entity_state::Alive)
+        {
+            entity.draw(m_Window);
+        }        
+    }
 
     if(m_Game_state == Game_state::battle && !text_drawn)
     {
         m_Window.draw(text);
     }
-    
+
     m_Window.display();
 }
 
@@ -182,6 +193,25 @@ void Game::init_party_entities()
     entities[PLAYER_ENTITY_INDEX - 2] = init_entity({32, 850}, "src/res/sprites/magic0.png");
     entities[PLAYER_ENTITY_INDEX - 1] = init_entity({72, 850}, "src/res/sprites/magic1.png");
     entities[PLAYER_ENTITY_INDEX - 0] = init_entity({112, 850}, "src/res/sprites/magic2.png");
+}
+
+
+void Game::kill_entity(Entity* entity)
+{
+    if(entity->m_State == Entity_state::Alive)
+    {
+        entity->m_State = Entity_state::Dead;
+    }
+}
+
+
+void Game::damage_entity(Entity *entity, int amount)
+{
+    entity->hp -= amount;
+    if(entity->hp <= 0)
+    {
+        kill_entity(entity);
+    }
 }
 
 
@@ -264,4 +294,21 @@ void Game::move_arrow(Arrow_Direction direction)
             } break;
         }
     }
+}
+
+Entity Game::get_current_entity()
+{
+    sf::Vector2f arrow_pos = get_current_arrow_pos();
+    for(size_t i = 0; i <= (ENEMY_ENTITY_OFFSET + 1); i++)
+    {
+        if(arrow_pos == entities[i].m_Position)
+        {
+            return entities[i];
+        }
+    }
+}
+
+sf::Vector2f Game::get_current_arrow_pos()
+{
+    return entities[ARROW_ENTITY_OFFSET].m_Position;
 }
