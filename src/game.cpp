@@ -6,23 +6,6 @@ Game::Game()
 {    
     std::vector<sf::VideoMode> VModes = sf::VideoMode::getFullscreenModes();
     m_Window.create(VModes.at(0), "Title", sf::Style::Default | sf::Style::Close);
-    m_BackgroundTexture = ResourceManager::loadTexture(Textures::Background, "src/res/background/background0.png");
-    m_BackgroundSprite.setTexture(*m_BackgroundTexture);
-
-    sf::Vector2f targetSize(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
-    m_BackgroundSprite.setScale(targetSize.x / m_BackgroundSprite.getLocalBounds().width,
-                                targetSize.y / m_BackgroundSprite.getLocalBounds().height);
-
-    m_Font = ResourceManager::loadFont(Fonts::Arial, "src/res/fonts/arial.ttf");
-    text.setFont(*m_Font);
-    text.setString("Choose the character with LEFT and RIGHT keys\n\t\t\t\t\t and press ENTER");
-    text.setCharacterSize(24);
-    text.setFillColor(sf::Color::Black);
-    text.setStyle(sf::Text::Bold);
-    text.setPosition({650, 650});
-    
-    m_Game_state = Game_state::explore;
-    m_Choose_state = Choose_state::Friend;
 }
 
 Game::~Game()
@@ -37,6 +20,18 @@ void Game::start()
     init_party_entities();
     // m_Window.setKeyRepeatEnabled(false);
 
+    MainMenuState menuState(gameMode);
+    LocalMapState localMapState(gameMode);
+    WorldMapState worldMapState(gameMode);
+    BattleState battleState(gameMode);
+
+    gameMode.Add("mainmenu", &menuState);
+    gameMode.Add("worldmap", &worldMapState);
+    gameMode.Add("localmap", &localMapState);
+    gameMode.Add("battle", &battleState);
+
+    gameMode.Change("mainmenu");
+
     while(m_Window.isOpen())
     {
         sf::Event event;
@@ -49,45 +44,9 @@ void Game::start()
                     m_Window.close();
                 } break;
 
-                case sf::Event::KeyPressed:
+                case sf::Event::KeyPressed: //  Main menu and parts where single input requires
                 {
-                    if(m_Game_state == Game_state::battle)
-                    {
-                        if(event.key.code == sf::Keyboard::Enter)
-                        {
-                            // printf("%s\n", friend_chosen ? "true" : "false");
-
-                            if(!text_drawn)
-                                text_drawn = true;  // TODO: draw second string
-
-                            switch(m_Choose_state)
-                            {
-                                case Choose_state::Enemy :
-                                {
-                                    auto entity = get_current_entity();
-                                    damage_entity(&entity, 100);
-                                    entities[ARROW_ENTITY_OFFSET].m_Position = {entities[PLAYER_ENTITY_INDEX - 2].m_Position.x, entities[PLAYER_ENTITY_INDEX - 2].m_Position.y - 40};
-                                    m_Choose_state = Choose_state::Friend;
-                                } break;
-
-                                case Choose_state::Friend :
-                                {
-                                    auto entity = get_current_entity();
-                                    damage_entity(&entity, 100);
-                                    entities[ARROW_ENTITY_OFFSET].m_Position = {entities[ENEMY_ENTITY_OFFSET].m_Position.x, entities[ENEMY_ENTITY_OFFSET].m_Position.y - 40};
-                                    m_Choose_state = Choose_state::Enemy;
-                                } break;
-                            }                         
-                        }
-                        else if(event.key.code == sf::Keyboard::Left)
-                        {
-                            move_arrow(Arrow_Direction::Left);
-                        }
-                        else if(event.key.code == sf::Keyboard::Right)
-                        {
-                            move_arrow(Arrow_Direction::Right);
-                        }
-                    }
+                    gameMode.Input(event.key.code);
                 } break;
 
                 default: break;
@@ -106,18 +65,10 @@ void Game::start()
 
 void Game::input()
 {
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) m_Window.close();
-
-    switch(m_Game_state)
+    std::string mode = gameMode.GetCurrentStateName();
+    if(mode != "battle")
     {
-        case Game_state::battle:
-        {   
-            // TODO:
-        } break;
-
-        case Game_state::explore:
-        {
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
             {   
                 for (size_t i = 0; i <= PLAYER_ENTITY_INDEX; i++)
                     entities[i].move(Entity::Direction::Right);
@@ -132,13 +83,14 @@ void Game::input()
                 for(size_t i = 0; i <= PLAYER_ENTITY_INDEX; i++)
                     entities[i].stop();
             } 
-        } break;
-    };    
+    }
 }
 
 
 void Game::update(float dt)
 {
+    std::string mode = gameMode.GetCurrentStateName();
+    
     for(auto &entity : entities)
     {
         if(entity.m_State == Entity_state::Alive)
@@ -146,13 +98,13 @@ void Game::update(float dt)
         
         if(entity.m_Position.x >= 700.0f && !enemy_spawned) // ???
         {
-            m_Game_state = Game_state::battle;
+            gameMode.Change("battle");
             spawn_enemy();
             enemy_spawned = true;
         }
     }
 
-    if(m_Game_state == Game_state::battle)
+    if(mode == "battle")
     {
         for(size_t i = 0; i <= PLAYER_ENTITY_INDEX; i++)
             entities[i].stop();
@@ -163,27 +115,28 @@ void Game::update(float dt)
             arrow_spawned = true;
         }
     }
+
+    gameMode.Update(dt);
 }
 
 
 void Game::draw()
-{
+{   
+    std::string mode = gameMode.GetCurrentStateName();
     m_Window.clear(sf::Color::White);
-    m_Window.draw(m_BackgroundSprite);
 
-    for(auto &entity : entities)
+    if(mode != "mainmenu")
     {
-        if(entity.m_State == Entity_state::Alive)
+        for(auto &entity : entities)
         {
-            entity.draw(m_Window);
-        }        
+            if(entity.m_State == Entity_state::Alive)
+            {
+                entity.draw(m_Window);
+            }    
+}
     }
 
-    if(m_Game_state == Game_state::battle && !text_drawn)
-    {
-        m_Window.draw(text);
-    }
-
+    gameMode.Render(m_Window);
     m_Window.display();
 }
 
@@ -217,7 +170,8 @@ void Game::damage_entity(Entity *entity, int amount)
 
 void Game::spawn_enemy()
 {
-    if(m_Game_state == Game_state::battle)
+    std::string mode = gameMode.GetCurrentStateName();
+    if(mode == "battle")
     {
         entities[ENEMY_ENTITY_OFFSET] = init_entity({1200, 850}, "src/res/sprites/enemy.png");
         entities[ENEMY_ENTITY_OFFSET + 1] = init_entity({1240, 850}, "src/res/sprites/enemy.png");
@@ -226,7 +180,8 @@ void Game::spawn_enemy()
 
 void Game::spawn_arrow(sf::Vector2f party_member_pos)
 {
-    if(m_Game_state == Game_state::battle)
+    std::string mode = gameMode.GetCurrentStateName();
+    if(mode == "battle")
     {
         entities[ARROW_ENTITY_OFFSET] = init_entity(party_member_pos, "src/res/sprites/arrow.png");
     }

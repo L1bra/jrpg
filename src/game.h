@@ -1,13 +1,11 @@
 #ifndef GAME_H_
 #define GAME_H_
 
-
 #include <vector>
 #include <iostream>
 
-#include <SFML/Graphics.hpp>
-
 #include "entity.h"
+#include "states.h"
 
 // TODO: 
 const size_t PLAYER_ENTITY_INDEX = 2;
@@ -72,6 +70,8 @@ private:
     Game_state m_Game_state;
     Choose_state m_Choose_state;
     
+    StateMachine gameMode;
+
     bool arrow_spawned = false;
     bool enemy_spawned = false;
     bool text_drawn = false;

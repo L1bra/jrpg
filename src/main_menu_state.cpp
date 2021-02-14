@@ -1,7 +1,16 @@
 #include "main_menu_state.h"
 
 
-MainMenuState::MainMenuState(const StateMachine& state)
+MainMenuState::MainMenuState(StateMachine& state)
+{
+    this->smp = &state; // TODO: constant pointers etc.
+}
+
+
+MainMenuState::~MainMenuState() {}
+
+
+void MainMenuState::OnEnter()
 {
     m_MainMenuTexture = ResourceManager::loadTexture(Textures::MenuBackground, "src/res/background/menu_state.png");
     m_MainMenuSprite.setTexture(*m_MainMenuTexture);
@@ -15,24 +24,25 @@ MainMenuState::MainMenuState(const StateMachine& state)
     sf::Vector2f targetSize(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
     m_MainMenuSprite.setScale(targetSize.x / m_MainMenuSprite.getLocalBounds().width, 
                             targetSize.y / m_MainMenuSprite.getLocalBounds().height);
-}
-
-MainMenuState::~MainMenuState()
-{
-    // destructor
+    isClosing = false;
 }
 
 
-    // play:     810 288
-    // settings: 654 468
-    // exit      834 648
-
-void MainMenuState::Input(Direction direction)
+void MainMenuState::OnExit()
 {
+    // on exit params
+}
 
-    switch(direction)
+
+// play:     810 288
+// settings: 654 468
+// exit      834 648
+
+void MainMenuState::Input(sf::Keyboard::Key key_code)   // pass StateMachine ?
+{
+    switch(key_code)
     {
-        case Up:
+        case sf::Keyboard::Up:
         {
             if(m_MenuCursorSprite.getPosition().y == 648.f)
             {
@@ -44,7 +54,7 @@ void MainMenuState::Input(Direction direction)
             }
         } break;
         
-        case Down:
+        case sf::Keyboard::Down:
         {
             if(m_MenuCursorSprite.getPosition().y == 288.f)
             {
@@ -56,14 +66,31 @@ void MainMenuState::Input(Direction direction)
             }
         } break;
         
-        case Left:
+        case sf::Keyboard::Left:
         {
             //
         } break;
 
-        case Right:
+        case sf::Keyboard::Right:
         {
             //
+        } break;
+
+        case sf::Keyboard::Enter:
+        {
+            if(m_MenuCursorSprite.getPosition().y == 288.f)  // play button
+            {
+                smp->Change("worldmap");
+            }
+            else if(m_MenuCursorSprite.getPosition().y == 468.f)
+            {
+                // TODO: settings
+            }
+            else
+            {
+                isClosing = true;
+            }
+            
         } break;
     }
 }
@@ -88,16 +115,9 @@ void MainMenuState::Update(float elapsedTime)
 
 void MainMenuState::Render(sf::RenderWindow& window)
 {
+    if(isClosing) // ???
+        window.close();
+        
     window.draw(m_MainMenuSprite);
     window.draw(m_MenuCursorSprite);
-}
-
-void MainMenuState::OnEnter()
-{
-    // on enter params
-}
-
-void MainMenuState::OnExit()
-{
-    // on exit params
 }
