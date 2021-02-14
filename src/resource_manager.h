@@ -5,15 +5,22 @@
 #include <memory>
 #include <map>
 
+
 enum Textures
 {
-    Background,
+    // entities
     Magic,
     Enemy,
 
-    // ?
-    Arrow
+    // arrow cursor
+    Arrow,
+
+    // menu cursor
+    MenuPlay,
+    MenuSettings,
+    MenuExit
 };
+
 
 enum Fonts
 {

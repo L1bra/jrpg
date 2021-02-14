@@ -2,27 +2,22 @@
 #include "resource_manager.h"
 
 
-bool Entity::operator== (const Entity& rhs) const    // ???
+bool Entity::operator== (const Entity& rhs) const    // am i need this ?
 {
     return (m_Sprite.getTexture() == rhs.m_Sprite.getTexture());
 }
 
-void Entity::move(Direction direction)
+
+void Entity::move(sf::Keyboard::Key key_code)
 {
     m_Alive_state = Alive_state::Walking;
-    walking_direction = direction;
+    direction = key_code;
 }  
 
 
 void Entity::stop()
 {
     m_Alive_state = Alive_state::Stand;
-}
-
-
-void Entity::draw(sf::RenderWindow& window) const
-{
-    window.draw(m_Sprite);  // getSprite ?
 }
 
 
@@ -36,15 +31,27 @@ void Entity::update(float dt)
             {
                 case Alive_state::Walking:
                 {
-                    switch(walking_direction)
+                    switch(direction)
                     {
-                        case Right: {
+                        case sf::Keyboard::Right:
+                        {
                             m_Position.x += m_Speed * dt;
                         } break;
 
-                        case Left: {
+                        case sf::Keyboard::Left:
+                        {
                             m_Position.x -= m_Speed * dt;
-                        } break;                        
+                        } break;
+
+                        case sf::Keyboard::Up:
+                        {
+                            m_Position.y -= m_Speed * dt;
+                        } break;
+
+                        case sf::Keyboard::Down:
+                        {
+                            m_Position.y += m_Speed * dt;
+                        } break;
                     }
                 } break;
 
@@ -56,6 +63,12 @@ void Entity::update(float dt)
     }
 
     m_Sprite.setPosition(m_Position);
+}
+
+
+void Entity::draw(sf::RenderWindow& window) const
+{
+    window.draw(m_Sprite);
 }
 
 

@@ -1,9 +1,24 @@
 #ifndef STATE_MACHINE_H_
 #define STATE_MACHINE_H_
 
-#include <initializer_list>
+#include "resource_manager.h"
+
+// #include <initializer_list>
+#include <algorithm>
 #include <map>
+#include <list>
 // #include <numeric>
+
+#include <SFML/Graphics.hpp>
+
+
+// enum Direction
+// {
+//     Up,
+//     Down,
+//     Left,
+//     Right
+// };
 
 
 class State
@@ -11,8 +26,9 @@ class State
 public:
     virtual ~State() {};
 
+    virtual void Input(sf::Keyboard::Key key_code);
     virtual void Update(float elapsedTime);
-    virtual void Render();
+    virtual void Render(sf::RenderWindow& window);
     virtual void OnEnter();
     virtual void OnExit();
 };
@@ -24,8 +40,9 @@ public:
     EmptyState();
     ~EmptyState();
 
+    void Input(sf::Keyboard::Key key_code);
     void Update(float elapsedTime);
-    void Render();
+    void Render(sf::RenderWindow& window);
     void OnEnter();
     void OnExit();
 };
@@ -40,10 +57,31 @@ public:
     StateMachine();
     ~StateMachine();
 
+    void Input(sf::Keyboard::Key key_code);
     void Update(float elapsedTime);
-    void Render();
-    void Change(std::string stateName); // std::initializer_list<std::string> params);  // Note: template?
+    void Render(sf::RenderWindow& window);
+    void Change(const std::string& stateName); // std::initializer_list<std::string> params);  // Note: template?
     void Add(std::string name, State* state);
+    std::string GetCurrentStateName();
 };
+
+
+class StateStack    // future
+{
+private:
+    std::map<std::string, State*> m_States;
+    std::list<State*> m_Stack;
+    State* m_CurrentState;
+    State* top;
+public:
+    StateStack();
+    ~StateStack();
+
+    void Update(float elapsedTime);
+    void Render(sf::RenderWindow& window);
+    void Push(std::string name);
+    void Pop();
+};
+
 
 #endif  // STATE_MACHINE_H_

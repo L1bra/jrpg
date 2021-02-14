@@ -1,12 +1,18 @@
-#include <iostream>
 
 #include "game.h"
 
+#include <SFML/Graphics.hpp>
 
-int main()
+#include <iostream>
+
+// #include "states.h"
+
+int main(int argc, char* argv[])
 {
     Game game;
     game.start();
 
+    (void)argc;
+    (void)argv;
     return 0;
 }

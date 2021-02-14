@@ -21,15 +21,9 @@ enum class Alive_state : uint8_t
 
 struct Entity
 {
-    enum Direction : uint8_t
-    {
-        Right,
-        Left
-    };
-
     Entity_state m_State;
     Alive_state m_Alive_state;
-    Direction walking_direction;
+    sf::Keyboard::Key direction;
 
     sf::Vector2f m_Position;
     sf::Sprite m_Sprite;
@@ -38,7 +32,7 @@ struct Entity
     int hp;
     float m_Speed;
 
-    void move(Direction direction);
+    void move(sf::Keyboard::Key key_code);
     void stop();
 
     void draw(sf::RenderWindow& window) const;
