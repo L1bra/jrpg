@@ -18,6 +18,11 @@ enum class Alive_state : uint8_t
     Walking
 };
 
+const std::size_t PLAYER_ENTITY_INDEX = 2;
+const std::size_t ENEMY_ENTITY_OFFSET = 3;
+const std::size_t ARROW_ENTITY_OFFSET = 5;
+const std::size_t MAX_ENTITIES = 6;
+
 
 struct Entity
 {

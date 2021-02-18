@@ -62,6 +62,11 @@ void WorldMapState::Input(sf::Keyboard::Key key_code)   // TODO: implement parav
 
 void WorldMapState::Update(float elapsedTime)
 {    
+    if(entities[PLAYER_ENTITY_INDEX].m_Position.x >= m_WorldMapSprite.getGlobalBounds().width)
+    {
+        gameMode().Change("localmap");
+    }
+
     for(auto &entity : entities)
     {
         entity.update(elapsedTime);

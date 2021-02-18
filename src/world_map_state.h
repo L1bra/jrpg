@@ -5,13 +5,6 @@
 #include "entity.h"
 
 
-// TODO: 
-const size_t PLAYER_ENTITY_INDEX = 2;
-const size_t ENEMY_ENTITY_OFFSET = 3;
-const size_t ARROW_ENTITY_OFFSET = 5;
-const size_t MAX_ENTITIES = 6;
-
-
 enum class Choose_state : uint8_t
 {
     None,
