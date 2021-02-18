@@ -20,10 +20,8 @@ void EmptyState::OnExit() {}
 
 
 StateMachine::StateMachine()
-{
-    EmptyState* emptyState = new EmptyState();  // am i need really this?
-    m_CurrentState = emptyState;
-}
+:m_CurrentState(new EmptyState())   // am i really need this ? 
+{}
 
 StateMachine::~StateMachine() {}
 
@@ -44,23 +42,19 @@ void StateMachine::Render(sf::RenderWindow& window)
 
 void StateMachine::Change(const std::string& stateName) // std::initializer_list<std::string> params)
 {
-    m_CurrentState->OnExit();
-    
-    if(m_States.find(stateName) != m_States.end())
+    if(m_States.find(stateName) == m_States.end())
     {
-        m_CurrentState = m_States[stateName];
-    }
-    else
-    {
-        std::cout << "There is no key: " << stateName << " are u ok!?!?!?\n";
+        std::cout << "There is no key: " << stateName << " are u ok!?!?!?\n";   // TODO: logger
     }
 
+    m_CurrentState->OnExit();
+    m_CurrentState = m_States[stateName];
     m_CurrentState->OnEnter(); // accumulate(params.begin(), params.end(), 0.0) as a param
 }
 
 void StateMachine::Add(std::string name, State* state)
 {
-        m_States[name] = state;
+    m_States[name] = state;
 }
 
 std::string StateMachine::GetCurrentStateName()
@@ -78,9 +72,16 @@ std::string StateMachine::GetCurrentStateName()
 
             ++it;
         }
-    } 
+    }
 
-    return "map is empty";  // ???
+    return "empty";  // ???
+}
+
+
+StateMachine& gameMode()
+{
+    static StateMachine sm;
+    return sm;
 }
 
 
@@ -88,15 +89,9 @@ std::string StateMachine::GetCurrentStateName()
 
 // Future
 
-StateStack::StateStack() 
-{
+StateStack::StateStack() {}
 
-}
-
-StateStack::~StateStack()
-{
-
-}
+StateStack::~StateStack() {}
 
 void StateStack::Update(float elapsedTime)
 {

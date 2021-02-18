@@ -8,6 +8,11 @@
 
 enum Textures
 {
+    MenuBackground,
+    WorldBackground,
+    LocalBackground,
+    BattleBackground,
+
     // entities
     Magic,
     Enemy,

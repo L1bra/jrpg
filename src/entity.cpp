@@ -33,6 +33,12 @@ void Entity::update(float dt)
                 {
                     switch(direction)
                     {
+                        case sf::Keyboard::Up:
+                        {
+                            m_Sprite.setTextureRect(sf::IntRect(0, 21, 24, 21));
+                            m_Position.y -= m_Speed * dt;
+                        } break;
+
                         case sf::Keyboard::Right:
                         {
                             m_Sprite.setTextureRect(sf::IntRect(0, 0, 24, 24));
@@ -45,12 +51,6 @@ void Entity::update(float dt)
                             m_Position.x -= m_Speed * dt;
                         } break;
 
-                        case sf::Keyboard::Up:
-                        {
-                            m_Sprite.setTextureRect(sf::IntRect(0, 21, 24, 21));
-                            m_Position.y -= m_Speed * dt;
-                        } break;
-
                         case sf::Keyboard::Down:
                         {
                             m_Sprite.setTextureRect(sf::IntRect(24, 21, 24, 21));
@@ -58,7 +58,7 @@ void Entity::update(float dt)
                         } break;
                     }
                 } break;
-
+                
                 case Alive_state::Stand: {} break;  // TODO
             }
         } break;
@@ -83,7 +83,7 @@ Entity init_entity(sf::Vector2f position, sf::String sprite_path)
     
     Entity entity = {};
     entity.hp = 100;
-    entity.m_Speed = 400.0f;
+    entity.m_Speed = 400.f;
 
     entity.m_State = Entity_state::Alive;
     entity.m_Alive_state = Alive_state::Stand;

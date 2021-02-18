@@ -17,7 +17,6 @@ public:
     void start();
 private:
     sf::RenderWindow m_Window;
-    StateMachine gameMode;
 };
 
 #endif  // GAME_H_

@@ -23,8 +23,8 @@ enum class Choose_state : uint8_t
 class WorldMapState : public State
 {
 private:
-    void kill_entity(Entity* entity);   // TODO
-    void damage_entity(Entity* entity, int amount);
+    void kill_entity(Entity& entity);   // TODO
+    void damage_entity(Entity& entity, int amount);
     Entity get_current_entity();
 
     void spawn_enemy();
@@ -32,10 +32,10 @@ private:
 
     void move_arrow(sf::Keyboard::Key key_code);
     sf::Vector2f get_current_arrow_pos();
-    void init_party_entities();
+    void init_player_entity();
 
 public:
-    WorldMapState(StateMachine& state);
+    WorldMapState();
     ~WorldMapState();
 
     void Input(sf::Keyboard::Key key_code);
@@ -60,9 +60,7 @@ private:
     bool enemy_spawned;
     bool text_drawn;
 
-    Entity entities[MAX_ENTITIES];  // TODO: vector ?
-    
-    StateMachine* smp;
+    Entity entities[MAX_ENTITIES];
 };
 
 #endif  // WORLD_MAP_STATE_H_

@@ -14,17 +14,17 @@ void Game::start()
 {
     sf::Clock clock;
 
-    MainMenuState menuState(gameMode);
-    LocalMapState localMapState(gameMode);
-    WorldMapState worldMapState(gameMode);
-    BattleState battleState(gameMode);
+    MainMenuState menuState;
+    LocalMapState localMapState;
+    WorldMapState worldMapState;
+    BattleState battleState;
 
-    gameMode.Add("mainmenu", &menuState);
-    gameMode.Add("worldmap", &worldMapState);
-    gameMode.Add("localmap", &localMapState);
-    gameMode.Add("battle", &battleState);
+    gameMode().Add("mainmenu", &menuState);
+    gameMode().Add("worldmap", &worldMapState);
+    gameMode().Add("localmap", &localMapState);
+    gameMode().Add("battle", &battleState);
 
-    gameMode.Change("mainmenu");
+    gameMode().Change("mainmenu");
 
     while(m_Window.isOpen())
     {
@@ -38,11 +38,11 @@ void Game::start()
                     m_Window.close();
                 } break;
 
-                case sf::Event::KeyPressed: //  Main menu and parts where single input requires
+                case sf::Event::KeyPressed: //  Main menu and parts where single input required
                 {
-                    std::string mode = gameMode.GetCurrentStateName();
+                    std::string mode = gameMode().GetCurrentStateName();
                     if(mode != "worldmap" || mode != "localmap")
-                        gameMode.Input(event.key.code);
+                        gameMode().Input(event.key.code);
                 } break;
 
                 default: break;
@@ -61,19 +61,19 @@ void Game::start()
 
 void Game::input()
 {
-    gameMode.Input(sf::Keyboard::Unknown); // idk what im doing
+    gameMode().Input(sf::Keyboard::Unknown); // idk what im doing
 }
 
 
 void Game::update(float dt)
 {
-    gameMode.Update(dt);
+    gameMode().Update(dt);
 }
 
 
 void Game::draw()
 {   
     m_Window.clear(sf::Color::White);
-    gameMode.Render(m_Window);
+    gameMode().Render(m_Window);
     m_Window.display();
 }

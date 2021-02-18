@@ -7,21 +7,15 @@
 class MainMenuState : public State
 {
 private:
-    // private menu methods
-
     std::shared_ptr<sf::Texture> m_MainMenuTexture;
     sf::Sprite m_MainMenuSprite;
 
     std::shared_ptr<sf::Texture> m_MenuCursorTexture;
     sf::Sprite m_MenuCursorSprite;
 
-    StateMachine* smp;
-
     bool isClosing;
 public:
-    // public methods
-
-    MainMenuState(StateMachine& state);
+    MainMenuState();
     ~MainMenuState();
 
     void Input(sf::Keyboard::Key key_code);

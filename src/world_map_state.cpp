@@ -1,15 +1,10 @@
 #include "world_map_state.h"
 #include <iostream>
 
-WorldMapState::WorldMapState(StateMachine& state)
-{
-    this->smp = &state;
-}
 
-WorldMapState::~WorldMapState()
-{
-    // destructor
-}
+WorldMapState::WorldMapState() {}
+
+WorldMapState::~WorldMapState() {}
 
 
 void WorldMapState::OnEnter()
@@ -22,25 +17,13 @@ void WorldMapState::OnEnter()
                                 targetSize.y / m_WorldMapSprite.getLocalBounds().height);
 
     int s = *(&entities + 1) - entities;    // debug
-    printf("size of entities: %d", s);
+    printf("size of entities: %d\n", s);
 
-    init_party_entities();
+    init_player_entity();
 }
 
 
-void WorldMapState::OnExit()
-{
-    // on exit
-}
-
-
-void WorldMapState::Update(float elapsedTime)
-{    
-    for(auto &entity : entities)
-    {
-        entity.update(elapsedTime);
-    }
-}
+void WorldMapState::OnExit() { /* on exit */ }
 
 
 void WorldMapState::Input(sf::Keyboard::Key key_code)   // TODO: implement paravozik-style
@@ -49,35 +32,39 @@ void WorldMapState::Input(sf::Keyboard::Key key_code)   // TODO: implement parav
     {
         case sf::Keyboard::Escape:
         {
-            smp->Change("mainmenu");  // TODO: change to local menu ?
+            gameMode().Change("mainmenu");  // TODO: change to local menu ?
         } break;
     }
 
     //  real time input for smooth movement
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {   
-        for (size_t i = 0; i <= PLAYER_ENTITY_INDEX; i++)
-            entities[i].move(sf::Keyboard::Right);
+        entities[PLAYER_ENTITY_INDEX].move(sf::Keyboard::Right);
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
-        for(size_t i = 0; i <= PLAYER_ENTITY_INDEX; i++)
-            entities[i].move(sf::Keyboard::Left);
+        entities[PLAYER_ENTITY_INDEX].move(sf::Keyboard::Left);
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
-        for(size_t i = 0; i <= PLAYER_ENTITY_INDEX; i++)
-            entities[i].move(sf::Keyboard::Up);
+        entities[PLAYER_ENTITY_INDEX].move(sf::Keyboard::Up);
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        for(size_t i = 0; i <= PLAYER_ENTITY_INDEX; i++)
-            entities[i].move(sf::Keyboard::Down);
+        entities[PLAYER_ENTITY_INDEX].move(sf::Keyboard::Down);
     }
     else
     {
-        for(size_t i = 0; i <= PLAYER_ENTITY_INDEX; i++)
-            entities[i].stop();
+        entities[PLAYER_ENTITY_INDEX].stop();
+    }
+}
+
+
+void WorldMapState::Update(float elapsedTime)
+{    
+    for(auto &entity : entities)
+    {
+        entity.update(elapsedTime);
     }
 }
 
@@ -93,27 +80,29 @@ void WorldMapState::Render(sf::RenderWindow& window)
 }
 
 
-void WorldMapState::init_party_entities()
+void WorldMapState::init_player_entity()
 {
-    entities[PLAYER_ENTITY_INDEX - 2] = init_entity({32, 850}, "src/res/sprites/magic0.png");
-    entities[PLAYER_ENTITY_INDEX - 1] = init_entity({72, 850}, "src/res/sprites/magic1.png");
-    entities[PLAYER_ENTITY_INDEX - 0] = init_entity({112, 850}, "src/res/sprites/magic2.png");
+    entities[PLAYER_ENTITY_INDEX] = init_entity({32, 850}, "src/res/sprites/magic0_final.png");
 }
 
 
-void WorldMapState::kill_entity(Entity* entity)
+
+
+// move to battle state 
+
+void WorldMapState::kill_entity(Entity& entity)
 {
-    if(entity->m_State == Entity_state::Alive)
+    if(entity.m_State == Entity_state::Alive)
     {
-        entity->m_State = Entity_state::Dead;
+        entity.m_State = Entity_state::Dead;
     }
 }
 
 
-void WorldMapState::damage_entity(Entity *entity, int amount)
+void WorldMapState::damage_entity(Entity& entity, int amount)
 {
-    entity->hp -= amount;
-    if(entity->hp <= 0)
+    entity.hp -= amount;
+    if(entity.hp <= 0)
     {
         kill_entity(entity);
     }

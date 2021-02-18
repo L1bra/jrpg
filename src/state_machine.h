@@ -3,22 +3,14 @@
 
 #include "resource_manager.h"
 
-// #include <initializer_list>
 #include <algorithm>
 #include <map>
 #include <list>
+
+// #include <initializer_list>
 // #include <numeric>
 
 #include <SFML/Graphics.hpp>
-
-
-// enum Direction
-// {
-//     Up,
-//     Down,
-//     Left,
-//     Right
-// };
 
 
 class State
@@ -64,6 +56,9 @@ public:
     void Add(std::string name, State* state);
     std::string GetCurrentStateName();
 };
+
+
+StateMachine& gameMode();
 
 
 class StateStack    // future

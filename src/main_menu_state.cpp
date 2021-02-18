@@ -1,11 +1,7 @@
 #include "main_menu_state.h"
 
 
-MainMenuState::MainMenuState(StateMachine& state)
-{
-    this->smp = &state; // TODO: constant pointers etc.
-}
-
+MainMenuState::MainMenuState(){}
 
 MainMenuState::~MainMenuState() {}
 
@@ -80,7 +76,7 @@ void MainMenuState::Input(sf::Keyboard::Key key_code)   // pass StateMachine ?
         {
             if(m_MenuCursorSprite.getPosition().y == 288.f)  // play button
             {
-                smp->Change("worldmap");
+                gameMode().Change("worldmap");
             }
             else if(m_MenuCursorSprite.getPosition().y == 468.f)
             {
