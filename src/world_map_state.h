@@ -2,6 +2,7 @@
 #define WORLD_MAP_STATE_H_
 
 #include "state_machine.h"
+#include "random_gen.h"
 #include "entity.h"
 
 
@@ -54,6 +55,7 @@ private:
     bool text_drawn;
 
     Entity entities[MAX_ENTITIES];
+    std::vector<Entity> enemies;
 };
 
 #endif  // WORLD_MAP_STATE_H_

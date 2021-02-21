@@ -1,7 +1,6 @@
 #include "world_map_state.h"
 #include <iostream>
 
-
 WorldMapState::WorldMapState() {}
 
 WorldMapState::~WorldMapState() {}
@@ -20,6 +19,7 @@ void WorldMapState::OnEnter()
     printf("size of entities: %d\n", s);
 
     init_player_entity();
+    spawn_enemy();
 }
 
 
@@ -67,9 +67,20 @@ void WorldMapState::Update(float elapsedTime)
         gameMode().Change("localmap");
     }
 
+
     for(auto &entity : entities)
     {
         entity.update(elapsedTime);
+    }
+
+    for(auto& enemy : enemies)  // TODO: FIX ME !
+    {
+        if(entities[PLAYER_ENTITY_INDEX].m_Sprite.getGlobalBounds().intersects(enemy.m_Sprite.getGlobalBounds()))
+        {
+            gameMode().Change("battle");
+        }
+
+        enemy.update(elapsedTime);
     }
 }
 
@@ -82,18 +93,49 @@ void WorldMapState::Render(sf::RenderWindow& window)
     {
         entity.draw(window);
     }
+
+    for(auto& enemy : enemies)  // FIXME !!!
+    {
+        enemy.draw(window);
+    }
 }
 
 
 void WorldMapState::init_player_entity()
 {
-    entities[PLAYER_ENTITY_INDEX] = init_entity({32, 850}, "src/res/sprites/magic0_final.png");
+    entities[PLAYER_ENTITY_INDEX] = init_entity({32, 850}, "src/res/sprites/magic0.png");
+}
+
+
+void WorldMapState::spawn_enemy()
+{
+    if(enemies.size() < 5)
+    {
+        for(int i = 0; i < (ENEMY_ENTITY_OFFSET + 2); i++)
+        {
+            int enemy_x = Random::getInt(0, 1920);  // better solution
+            int enemy_y = Random::getInt(0, 1920);
+            int enemy_spawn_dir = Random::getInt(0, 3);
+
+            Entity enemy = init_entity({enemy_x, (enemy_y / 2)}, "src/res/sprites/enemy.png");
+            enemies.push_back(std::move(enemy));
+            
+            switch(enemy_spawn_dir)
+            {
+                case 0:  entities[ENEMY_ENTITY_OFFSET + i].m_Sprite.setTextureRect(sf::IntRect(0, 21, 24, 21)); break;
+                case 1:  entities[ENEMY_ENTITY_OFFSET + i].m_Sprite.setTextureRect(sf::IntRect(0, 0, 24, 24)); break;
+                case 2:  entities[ENEMY_ENTITY_OFFSET + i].m_Sprite.setTextureRect(sf::IntRect(24, 0, 24, 24)); break;
+                case 3:  entities[ENEMY_ENTITY_OFFSET + i].m_Sprite.setTextureRect(sf::IntRect(24, 21, 24, 21)); break;
+            }
+        }
+    }
 }
 
 
 
 
 // move to battle state 
+#if 0
 
 void WorldMapState::kill_entity(Entity& entity)
 {
@@ -114,11 +156,6 @@ void WorldMapState::damage_entity(Entity& entity, int amount)
 }
 
 
-void WorldMapState::spawn_enemy()   // move a copy to battle state
-{
-    entities[ENEMY_ENTITY_OFFSET] = init_entity({1200, 850}, "src/res/sprites/enemy.png");
-    entities[ENEMY_ENTITY_OFFSET + 1] = init_entity({1240, 850}, "src/res/sprites/enemy.png");
-}
 
 void WorldMapState::spawn_arrow(sf::Vector2f party_member_pos) // to battle state ?
 {
@@ -202,3 +239,5 @@ sf::Vector2f WorldMapState::get_current_arrow_pos()
 {
     return entities[ARROW_ENTITY_OFFSET].m_Position;
 }
+
+#endif
