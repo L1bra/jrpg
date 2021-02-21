@@ -28,14 +28,14 @@ void WorldMapState::OnExit() { /* on exit */ }
 
 void WorldMapState::Input(sf::Keyboard::Key key_code)   // TODO: implement paravozik-style
 {
-    switch(key_code)    // for single input
+    switch(key_code)
     {
-        case sf::Keyboard::Escape:
-        {
-            gameMode().Change("mainmenu");  // TODO: change to local menu ?
+        case 0:
+        {    
+            //
         } break;
     }
-
+    
     //  real time input for smooth movement
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {   

@@ -27,9 +27,9 @@ void LocalMapState::Input(sf::Keyboard::Key key_code)
 {
     switch(key_code)
     {
-        case sf::Keyboard::Escape:
-        {
-            gameMode().Change("mainmenu");
+        case 0:
+        {    
+            //
         } break;
     }
 

@@ -89,6 +89,7 @@ StateMachine& gameMode()
 
 // Future
 
+#if 0
 StateStack::StateStack() {}
 
 StateStack::~StateStack() {}
@@ -121,3 +122,4 @@ void StateStack::Pop()
 {
     m_Stack.pop_back();
 }
+#endif

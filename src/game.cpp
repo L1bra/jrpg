@@ -40,6 +40,9 @@ void Game::start()
 
                 case sf::Event::KeyPressed: //  Main menu and parts where single input required
                 {
+                    if(event.key.code == sf::Keyboard::Escape)
+                        gameMode().Change("mainmenu");
+                        
                     std::string mode = gameMode().GetCurrentStateName();
                     if(mode != "worldmap" || mode != "localmap")
                         gameMode().Input(event.key.code);

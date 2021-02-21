@@ -88,6 +88,11 @@ void MainMenuState::Input(sf::Keyboard::Key key_code)   // pass StateMachine ?
             }
             
         } break;
+
+        case sf::Keyboard::Escape:
+        {
+            // to the last state
+        } break;
     }
 }
 

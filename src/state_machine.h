@@ -60,7 +60,7 @@ public:
 
 StateMachine& gameMode();
 
-
+#if 0
 class StateStack    // future
 {
 private:
@@ -78,5 +78,6 @@ public:
     void Pop();
 };
 
+#endif
 
 #endif  // STATE_MACHINE_H_
