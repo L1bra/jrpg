@@ -1,12 +1,7 @@
 #include "main_menu_state.h"
 
 
-MainMenuState::MainMenuState(){}
-
-MainMenuState::~MainMenuState() {}
-
-
-void MainMenuState::OnEnter()
+MainMenuState::MainMenuState()
 {
     m_MainMenuTexture = ResourceManager::loadTexture(Textures::MenuBackground, "src/res/background/menu_state.png");
     m_MainMenuSprite.setTexture(*m_MainMenuTexture);
@@ -23,6 +18,11 @@ void MainMenuState::OnEnter()
     isClosing = false;
 }
 
+MainMenuState::~MainMenuState() {}
+
+
+void MainMenuState::OnEnter() {}
+
 
 void MainMenuState::OnExit()
 {
@@ -34,10 +34,16 @@ void MainMenuState::OnExit()
 // settings: 654 468
 // exit      834 648
 
-void MainMenuState::Input(sf::Keyboard::Key key_code)   // pass StateMachine ?
+void MainMenuState::Input(sf::Keyboard::Key key_code)   // TODO Resume button
 {
     switch(key_code)
     {
+        case sf::Keyboard::Escape:
+        {
+            if(gameMode().isEmpty())
+                gameMode().Pop();   // to the last state
+        } break;
+
         case sf::Keyboard::Up:
         {
             if(m_MenuCursorSprite.getPosition().y == 648.f)
@@ -76,7 +82,8 @@ void MainMenuState::Input(sf::Keyboard::Key key_code)   // pass StateMachine ?
         {
             if(m_MenuCursorSprite.getPosition().y == 288.f)  // play button
             {
-                gameMode().Change("worldmap");
+                gameMode().Pop();
+                gameMode().Push("worldmap");
             }
             else if(m_MenuCursorSprite.getPosition().y == 468.f)
             {
@@ -89,10 +96,6 @@ void MainMenuState::Input(sf::Keyboard::Key key_code)   // pass StateMachine ?
             
         } break;
 
-        case sf::Keyboard::Escape:
-        {
-            // to the last state
-        } break;
     }
 }
 

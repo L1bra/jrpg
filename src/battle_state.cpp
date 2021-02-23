@@ -23,9 +23,9 @@ void BattleState::Input(sf::Keyboard::Key key_code)
 {
     switch(key_code)
     {
-        case 0:
+        case sf::Keyboard::Escape:
         {    
-            //
+            gameMode().Push("mainmenu");
         } break;
     }
 }

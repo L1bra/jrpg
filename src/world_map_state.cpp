@@ -1,12 +1,7 @@
 #include "world_map_state.h"
 #include <iostream>
 
-WorldMapState::WorldMapState() {}
-
-WorldMapState::~WorldMapState() {}
-
-
-void WorldMapState::OnEnter()
+WorldMapState::WorldMapState()
 {
     m_WorldMapTexture = ResourceManager::loadTexture(Textures::WorldBackground, "src/res/background/background0.png");
     m_WorldMapSprite.setTexture(*m_WorldMapTexture);
@@ -22,6 +17,13 @@ void WorldMapState::OnEnter()
     spawn_enemy();
 }
 
+WorldMapState::~WorldMapState() {}
+
+
+void WorldMapState::OnEnter()
+{
+}
+
 
 void WorldMapState::OnExit() { /* on exit */ }
 
@@ -30,9 +32,9 @@ void WorldMapState::Input(sf::Keyboard::Key key_code)   // TODO: implement parav
 {
     switch(key_code)
     {
-        case 0:
+        case sf::Keyboard::Escape:
         {    
-            //
+            gameMode().Push("mainmenu");
         } break;
     }
     
@@ -64,7 +66,7 @@ void WorldMapState::Update(float elapsedTime)
 {    
     if(entities[PLAYER_ENTITY_INDEX].m_Position.x >= m_WorldMapSprite.getGlobalBounds().width)
     {
-        gameMode().Change("localmap");
+        gameMode().Push("localmap");
     }
 
 
@@ -77,7 +79,7 @@ void WorldMapState::Update(float elapsedTime)
     {
         if(entities[PLAYER_ENTITY_INDEX].m_Sprite.getGlobalBounds().intersects(enemy.m_Sprite.getGlobalBounds()))
         {
-            gameMode().Change("battle");
+            gameMode().Push("battle");
         }
 
         enemy.update(elapsedTime);

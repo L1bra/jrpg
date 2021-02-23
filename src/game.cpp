@@ -14,9 +14,10 @@ void Game::start()
 {
     sf::Clock clock;
 
+
     MainMenuState menuState;
-    LocalMapState localMapState;
     WorldMapState worldMapState;
+    LocalMapState localMapState;
     BattleState battleState;
 
     gameMode().Add("mainmenu", &menuState);
@@ -24,7 +25,7 @@ void Game::start()
     gameMode().Add("localmap", &localMapState);
     gameMode().Add("battle", &battleState);
 
-    gameMode().Change("mainmenu");
+    gameMode().Push("mainmenu");
 
     while(m_Window.isOpen())
     {
@@ -40,12 +41,7 @@ void Game::start()
 
                 case sf::Event::KeyPressed: //  Main menu and parts where single input required
                 {
-                    if(event.key.code == sf::Keyboard::Escape)
-                        gameMode().Change("mainmenu");
-                        
-                    std::string mode = gameMode().GetCurrentStateName();
-                    if(mode != "worldmap" || mode != "localmap")
-                        gameMode().Input(event.key.code);
+                    gameMode().Input(event.key.code);
                 } break;
 
                 default: break;

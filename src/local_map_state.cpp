@@ -3,11 +3,7 @@
 
 // forcing myself to write comments so ...
 
-LocalMapState::LocalMapState() { /* constructor */ }
-
-LocalMapState::~LocalMapState() { /* destructor lmao */ }
-
-void LocalMapState::OnEnter()
+LocalMapState::LocalMapState()
 {
     // on enter stuff
     m_LocalMapTexture = ResourceManager::loadTexture(Textures::LocalBackground, "src/res/background/localmap_state.png");
@@ -20,6 +16,12 @@ void LocalMapState::OnEnter()
     init_party_entities();
 }
 
+LocalMapState::~LocalMapState() { /* destructor lmao */ }
+
+void LocalMapState::OnEnter()
+{
+}
+
 void LocalMapState::OnExit() { /* on exit params */ }
 
 
@@ -27,10 +29,15 @@ void LocalMapState::Input(sf::Keyboard::Key key_code)
 {
     switch(key_code)
     {
-        case 0:
+        case sf::Keyboard::Escape:
         {    
-            //
+            gameMode().Push("mainmenu");
         } break;
+
+        case sf::Keyboard::M:
+        {
+            gameMode().Pop();   // to world state
+        }
     }
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
@@ -48,7 +55,7 @@ void LocalMapState::Input(sf::Keyboard::Key key_code)
     
 }
 
-void LocalMapState::Update(float elapsedTime)
+void LocalMapState::Update(float elapsedTime)   // spawn one enemy 
 {
     for(auto& entity : entities)
     {
@@ -70,6 +77,11 @@ void LocalMapState::Update(float elapsedTime)
         }
 
         entity.update(elapsedTime);
+    }
+
+    if(entities[PLAYER_ENTITY_INDEX].m_Position.x <= 0.f)
+    {
+        gameMode().Pop();
     }
 }
 

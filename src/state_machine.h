@@ -3,12 +3,7 @@
 
 #include "resource_manager.h"
 
-#include <algorithm>
 #include <map>
-#include <list>
-
-// #include <initializer_list>
-// #include <numeric>
 
 #include <SFML/Graphics.hpp>
 
@@ -40,44 +35,27 @@ public:
 };
 
 
-class StateMachine
+class StateStack
 {
 private:
     std::map<std::string, State*> m_States;
-    State* m_CurrentState;
-public:
-    StateMachine();
-    ~StateMachine();
-
-    void Input(sf::Keyboard::Key key_code);
-    void Update(float elapsedTime);
-    void Render(sf::RenderWindow& window);
-    void Change(const std::string& stateName); // std::initializer_list<std::string> params);  // Note: template?
-    void Add(std::string name, State* state);
-    std::string GetCurrentStateName();
-};
-
-
-StateMachine& gameMode();
-
-#if 0
-class StateStack    // future
-{
-private:
-    std::map<std::string, State*> m_States;
-    std::list<State*> m_Stack;
-    State* m_CurrentState;
+    std::vector<State*> m_Stack;
+    State* state;
     State* top;
 public:
     StateStack();
     ~StateStack();
 
+    void Add(std::string, State* state);
+    void Input(sf::Keyboard::Key key_code);
     void Update(float elapsedTime);
     void Render(sf::RenderWindow& window);
+
     void Push(std::string name);
     void Pop();
+    bool isEmpty();
 };
 
-#endif
+StateStack& gameMode();
 
 #endif  // STATE_MACHINE_H_
