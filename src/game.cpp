@@ -14,7 +14,6 @@ void Game::start()
 {
     sf::Clock clock;
 
-
     MainMenuState menuState;
     WorldMapState worldMapState;
     LocalMapState localMapState;

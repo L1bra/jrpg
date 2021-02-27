@@ -8,7 +8,6 @@
 
 enum class Choose_state : uint8_t
 {
-    None,
     Friend = 0,
     Enemy
 };

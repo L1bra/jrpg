@@ -54,10 +54,12 @@ void StateStack::Render(sf::RenderWindow& window)
 
 void StateStack::Push(std::string name)
 {
+    state->OnExit();
     state = m_States[name];
-    m_Stack.push_back(state);
-}
 
+    m_Stack.push_back(state);
+    state->OnEnter();
+}
 
 void StateStack::Add(std::string name, State* state)
 {
@@ -72,6 +74,11 @@ void StateStack::Pop()
 bool StateStack::isEmpty()
 {
     return m_Stack.size() ? 1 : 0;
+}
+
+std::size_t StateStack::size()
+{
+    return m_Stack.size();
 }
 
 

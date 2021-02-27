@@ -53,7 +53,9 @@ public:
 
     void Push(std::string name);
     void Pop();
+
     bool isEmpty();
+    std::size_t size();
 };
 
 StateStack& gameMode();

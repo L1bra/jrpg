@@ -57,6 +57,11 @@ void LocalMapState::Input(sf::Keyboard::Key key_code)
 
 void LocalMapState::Update(float elapsedTime)   // spawn one enemy 
 {
+    if(entities[PLAYER_ENTITY_INDEX].m_Position.x >= m_LocalMapSprite.getGlobalBounds().width)
+    {
+        gameMode().Push("battle");
+    }
+
     for(auto& entity : entities)
     {
         if((entities[PLAYER_ENTITY_INDEX].m_Position.x - entities[PLAYER_ENTITY_INDEX - 1].m_Position.x) > 40.f)

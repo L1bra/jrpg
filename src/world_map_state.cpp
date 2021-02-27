@@ -10,11 +10,8 @@ WorldMapState::WorldMapState()
     m_WorldMapSprite.setScale(targetSize.x / m_WorldMapSprite.getLocalBounds().width,
                                 targetSize.y / m_WorldMapSprite.getLocalBounds().height);
 
-    int s = *(&entities + 1) - entities;    // debug
-    printf("size of entities: %d\n", s);
-
-    init_player_entity();
-    spawn_enemy();
+    // int s = *(&entities + 1) - entities;    // debug
+    // printf("size of entities: %d\n", s);
 }
 
 WorldMapState::~WorldMapState() {}
@@ -22,6 +19,8 @@ WorldMapState::~WorldMapState() {}
 
 void WorldMapState::OnEnter()
 {
+    init_player_entity();
+    spawn_enemy();
 }
 
 
