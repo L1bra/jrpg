@@ -1,4 +1,5 @@
 #include "main_menu_state.h"
+#include <iostream>
 
 
 MainMenuState::MainMenuState()
@@ -99,11 +100,14 @@ void MainMenuState::Input(sf::Keyboard::Key key_code)
                 // TODO: Hide resume button or print something like "there is no to resume u idiot..."
                 if(gameMode().size() >= 2)
                     gameMode().Pop();   // to the last state
-                
-                // gameMode().Push("worldmap");
             }
             else if(m_MenuCursorSprite.getPosition().y == button_coord.new_game.y + BUTTON_OFFSET)
             {
+                do
+                {
+                    gameMode().Pop();
+                } while ( gameMode().size() != 0);
+
                 gameMode().Push("worldmap");
             }
             else if(m_MenuCursorSprite.getPosition().y == button_coord.save_load.y + BUTTON_OFFSET)
